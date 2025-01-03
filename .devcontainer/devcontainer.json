@@ -4,6 +4,7 @@
 	"features": {
 		"ghcr.io/devcontainers/features/github-cli:1": {} 
 	},
+	"runArgs": ["--add-host=host.docker.internal:host-gateway"],
 	"forwardPorts": [],
 	"postCreateCommand": "bash .devcontainer/post-script.sh",
 	"customizations": {
