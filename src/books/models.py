@@ -32,11 +32,3 @@ class Book(SQLModel, table=True):
 
     def __repr__(self):
         return f"<Book {self.title}>"
-
-
-class BookUpdateModel(SQLModel):
-    title: str
-    author: str
-    publisher: str
-    page_count: int
-    language: str
