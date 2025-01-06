@@ -6,7 +6,8 @@ from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
 from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth.utils import create_access_token, verify_password
-from src.auth.dependencies import RefreshTokenBearer
+from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer
+from src.db.redis import add_jti_to_blocklist
 
 REFRESH_TOKEN_EXPIRY = 2
 
@@ -75,3 +76,15 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
             "access_token": new_access_token
         })
     return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, details="Invalid or expired token")
+
+
+@auth_router.get("/logout")
+async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
+    jti = token_details["jti"]
+    await add_jti_to_blocklist(jti)
+    return JSONResponse(
+        content={
+            "message": "Logged out successfully"
+        },
+        status_code=status.HTTP_200_OK
+    )
